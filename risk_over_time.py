@@ -41,6 +41,25 @@ st.pyplot(strat1.dstr_over_time(years=15, normalize=True))
 
 st.write('done plot')
 
+# TODO more clever choice of graph bounds (use points of intersection?)
+# and/or interactive plots
+# split page for less scrolling
+# type input / slider
+# expected wait time message
+inverse = True
+fig, ax = plt.subplots()
+ax.plot(*strat1.cum_dstr(inverse), label=strat1.label)
+ax.plot(*strat2.cum_dstr(inverse), label=strat1.label)
+ax.set_xlabel('Amount')
+if inverse:
+  ax.set_ylabel('P(<x)')
+  ax.set_title('CDF Complement (chance of ending with at least x)')
+else:
+  ax.set_ylabel('P(>x)')
+  ax.set_title('CDF (chance of ending with at most x)')
+ax.vlines(benchmark, 0, 1, color='black', linestyles='--')
+ax.legend()
+st.pyplot(fig)
 
 
 
