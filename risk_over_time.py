@@ -12,13 +12,19 @@ years = st.slider('Time', min_value=1, max_value=60, value=10)
 
 principal = 1
 
-#mu = st.slider('\N{GREEK SMALL LETTER MU}')
-mu = st.slider(unicodeit.replace('\mu^*'), min_value=-1., max_value=3., value=0.)
-#sigma = st.slider('\N{greek small letter sigma}')
-sigma = st.slider(unicodeit.replace('\sigma^*'), min_value=0., max_value=3., value=0.)
+# format = '%.' + [decimal places] + 'g' for 'general' format
+# can use min_value and max_value to restrict inputs for number_input
+# need key for sliders if labels (and all args) are repeated
+mu = st.number_input(label=unicodeit.replace('\mu^*'), value=0., format='%.15g')
+# TODO maybe take out the slider label if we also have the text input?
+mu = st.slider(label='', min_value=-1., max_value=3., value=mu, format='%.15g', key='mu1')
+sigma = st.number_input(label=unicodeit.replace('\sigma^*'), value=0., format='%.15g')
+sigma = st.slider('', min_value=0., max_value=3., value=sigma, format='%.15g', key='sig1')
 
-mu2 = st.slider(unicodeit.replace('\mu^*_2'), min_value=-1., max_value=3., value=0.)
-sigma2 = st.slider(unicodeit.replace('\sigma^*_2'), min_value=0., max_value=3., value=0.)
+mu2 = st.number_input(label=unicodeit.replace('\mu^*_2'), value=0., format='%.15g')
+mu2 = st.slider(label='', min_value=-1., max_value=3., value=mu2, format='%.15g', key='mu2')
+sigma2 = st.number_input(label=unicodeit.replace('\sigma^*_2'), value=0., format='%.15g')
+sigma2 = st.slider('', min_value=0., max_value=3., value=sigma2, format='%.15g', key='sig2')
 
 benchmark = st.slider('Benchmark Rate', min_value=-1., max_value=3., value=0.)
 
