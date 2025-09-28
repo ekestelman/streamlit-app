@@ -262,7 +262,9 @@ class Strat:
     # Do functions work as expected if years=0?
     # Faster to start loop at 1 (0 is trivially).
     for i in range(years+1):
-      self.recalc(i)
+      self.recalc(i)   # can we just move this from top of loop to bottom?
+                       # No, this runs recalc for the given year. Afterwards, we
+                       # must recalc for the actual input years. This arg was not passed.
       dstr = self.roi_dstr
       mid.append(np.median(dstr))
       low.append(np.quantile(dstr, 0.5 + interval))
