@@ -4,6 +4,39 @@ import unicodeit
 from strats_module import *
 from scipy.stats import lognorm
 
+# if param not in session state, declare it
+# assign session state param with input
+# use callback to assign default val
+def update_params():
+  # callback function
+  key = 'foo'
+  default = st.session_state[key]
+  st.write('ran callback', st.session_state[key])
+
+if 'foo' not in st.session_state:
+  st.session_state.foo = 0
+
+st.write('foo state', st.session_state.foo)
+default = st.session_state.foo
+st.write('default', default)
+st.session_state.foo = st.number_input(label='foo', value=st.session_state.foo, key='foo_input', on_change=update_params)
+#st.session_state.foo = foo
+st.write('foo input', st.session_state.foo_input)
+st.session_state.foo = st.slider(label='', value=st.session_state.foo, key='foo_slider', on_change=update_params)
+#st.session_state.foo = foo
+st.write('foo input after slider', st.session_state.foo_input)
+st.write('foo sldier', st.session_state.foo_slider)
+st.write(st.session_state.foo, default)
+
+def updatex(key, src):
+  # key is parameter, source is tool used for input
+  out = {'slider': 'input', 'input': 'slider'}[src]
+  st.session_state[key+out] = st.session_state[key+src]
+x = st.number_input(label='x', value=0, key='xinput', on_change=updatex, args=('x', 'input'))
+x = st.slider(label='', value=x, key='xslider', on_change=updatex, args=('x', 'slider'))
+st.write(x, st.session_state.xinput, st.session_state.xslider)
+
+
 # Better to have this in module or dict?
 years = 10
 mu = .1
