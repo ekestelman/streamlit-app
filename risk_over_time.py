@@ -4,37 +4,18 @@ import unicodeit
 from strats_module import *
 from scipy.stats import lognorm
 
-# if param not in session state, declare it
-# assign session state param with input
-# use callback to assign default val
-def update_params():
+def update_inputs(param, src=None):
   # callback function
-  key = 'foo'
-  default = st.session_state[key]
-  st.write('ran callback', st.session_state[key])
-
-if 'foo' not in st.session_state:
-  st.session_state.foo = 0
-
-st.write('foo state', st.session_state.foo)
-default = st.session_state.foo
-st.write('default', default)
-st.session_state.foo = st.number_input(label='foo', value=st.session_state.foo, key='foo_input', on_change=update_params)
-#st.session_state.foo = foo
-st.write('foo input', st.session_state.foo_input)
-st.session_state.foo = st.slider(label='', value=st.session_state.foo, key='foo_slider', on_change=update_params)
-#st.session_state.foo = foo
-st.write('foo input after slider', st.session_state.foo_input)
-st.write('foo sldier', st.session_state.foo_slider)
-st.write(st.session_state.foo, default)
-
-def updatex(key, src):
   # key is parameter, source is tool used for input
-  out = {'slider': 'input', 'input': 'slider'}[src]
-  st.session_state[key+out] = st.session_state[key+src]
-x = st.number_input(label='x', value=0, key='xinput', on_change=updatex, args=('x', 'input'))
-x = st.slider(label='', value=x, key='xslider', on_change=updatex, args=('x', 'slider'))
-st.write(x, st.session_state.xinput, st.session_state.xslider)
+  if src is None:
+    # lazy: assume input type (src) will be str of len 5
+    src = param[-5:]
+    param = param[:-5]
+  out = {'slide': 'input', 'input': 'slide'}[src]
+  st.session_state[param + out] = st.session_state[param + src]
+#x = st.number_input(label='x', value=0, key='xinput', on_change=updatex, args=('x', 'input'))
+#x = st.slider(label='', value=x, key='xslider', on_change=updatex, args=('x', 'slider'))
+#st.write(x, st.session_state.xinput, st.session_state.xslider)
 
 
 # Better to have this in module or dict?
@@ -66,15 +47,27 @@ input_grid = [st.columns([1,2]) for _ in range(input_rows)]
 # enter on it won't work. Val has to change to update / initiate rerun
 # Better to have slider on left or right? Better to update text on slider or slider on text?
 # FIXME set input to x, set slider to y, set input to z then back to x, val returns to y.
+# this only happens when the changes are made before the program fully runs! If it is
+# allowed to run fully, then this does not occur.
 current_row = 0
-years = input_grid[current_row][0].number_input(label='Time (truncates to integer)', min_value=0, value=years)
-years = input_grid[current_row][1].slider(label='', min_value=0, max_value=60, value=years)
+years = input_grid[current_row][0].number_input(label='Time (truncates to integer)',
+        min_value=0, value=years, key='time_input', on_change=update_inputs, 
+        args=['time_input'])
+years = input_grid[current_row][1].slider(label='', min_value=0, max_value=60, 
+        value=years, key='time_slide', on_change=update_inputs, args=['time_slide'])
 current_row += 1
 
-principal = input_grid[current_row][0].number_input(label='Principal', min_value=0., value=principal, step=.1)
+# XXX Projected growth plot is normalized and does not depend on principal, want to 
+# change this?
+# CDF is using principal.
+principal = input_grid[current_row][0].number_input(label='Principal', min_value=0.,
+            value=principal, step=.1, key='principal_input', on_change=update_inputs,
+            args=('principal_', 'input'))
 # Makes more sense to give options in thousands?
 # .1 step might represent $100
-principal = input_grid[current_row][1].slider(label='', min_value=0., max_value=50., value=principal, step=.1)
+principal = input_grid[current_row][1].slider(label='', min_value=0., max_value=50.,
+            value=principal, step=.1, key='principal_slide', on_change=update_inputs,
+            args=('principal_', 'slide'))
 current_row += 1
 
 benchmark = input_grid[current_row][0].number_input('Benchmark Rate', value=benchmark, format='%.15g')
