@@ -4,17 +4,20 @@ import time
 from scipy.stats import sem
 import streamlit as st
 
+# mu_x, sig_x are mean and std of lognorm. mu and sig are mean and std
+# of the underlying normal distribution, and the parameters for lognorm.
 def get_mu(mu_x, sig_x):
-  #mu = np.log(mu_x**2 / (mu_x**2 + sig_x**2)**0.5)
-  # Truly want the inverse of this
-  mu = np.log(1+mu_x)  # Temporary fix, verify math
+  mu = np.log(mu_x**2 / (mu_x**2 + sig_x**2)**0.5)
+  # Truly want the inverse of this? No! This gives parameters of the underlying
+  # norm, which is also the input for lognorm.
+  #mu = np.log(1+mu_x)  # Temporary fix, verify math
   # This mu_x corresponds to mu*-1 on lognormal wikipedia page:
   # mu_x + 1 should be the median of the lognormal
   return mu
 
 def get_sig(mu_x, sig_x):
-  #sig = (np.log(1 + sig_x**2 / mu_x**2)) ** 0.5
-  sig = np.log(1+sig_x) # Temporary fix, verify math
+  sig = (np.log(1 + sig_x**2 / mu_x**2)) ** 0.5
+  #sig = np.log(1+sig_x) # Temporary fix, verify math
   # This sig_x should correspond to sig*-1 on lognormal wikipedia page.
   return sig
 
@@ -182,7 +185,7 @@ class Strat:
     # TODO Below could be extracted to recalc (or calc) method.
     # Can roi_dstr be optional in init? Want to initialize object before
     # deciding years
-    self.roi_dstr = roi_dstr(years, mu, sigma, trials, principle)
+    self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
     self.summary = summarize(self.roi_dstr, self.years)
     # ^Should this be a method?
     self.label = "$\mu *=$"+str(mu)+", $\sigma *=$"+str(sigma)
