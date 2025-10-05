@@ -1,7 +1,7 @@
 import streamlit as st
 #import rot
 import unicodeit
-from strats_module import *
+from rot_lib.strats_module import *
 from scipy.stats import lognorm
 
 def update_inputs(param, src=None):
@@ -34,6 +34,7 @@ st.write('## Investment Risk Over Time :chart:')
 st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results.')
 
 # Changing values later does not change this line
+# Make sure that values match supposed inputs!
 st.write(years, principal, benchmark, mu, sigma, mu2, sigma2)
 
 # border arg only in later versions
@@ -102,6 +103,8 @@ st.write(years, principal, benchmark, mu, sigma, mu2, sigma2)
 st.write(get_mu(mu, sigma))
 st.write(get_sig(mu, sigma))
 
+# Try a checkbox to indicate if input is mu, sigma of norm, lognorm, or mu* sig*
+# self.summary = summarize() prints results?
 strat1 = Strat(mu, sigma, years, principal)
 strat2 = Strat(mu2, sigma2, years, principal)
 
