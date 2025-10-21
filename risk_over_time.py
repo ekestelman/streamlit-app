@@ -98,10 +98,21 @@ sigma2 = input_grid[current_row][0].number_input(label=unicodeit.replace('\sigma
 sigma2 = input_grid[current_row][1].slider('', min_value=0., max_value=.3, value=sigma2, format='%.15g', key='sig2')
 current_row += 1
 
-st.write(years, principal, benchmark, mu, sigma, mu2, sigma2)
+st.write('Years:', years)
+st.write('Principle:', principal)
+st.write('Benchmark:', benchmark)
+mu += 1; mu2 += 1
+st.write(unicodeit.replace('\mu')+':', mu)
+st.write(unicodeit.replace('\sigma')+':', sigma)
+st.write(unicodeit.replace('\mu_2')+':', mu2)
+st.write(unicodeit.replace('\sigma_2')+':', sigma2)
 
-st.write(get_mu(mu, sigma))
-st.write(get_sig(mu, sigma))
+st.write(unicodeit.replace('\mu_x')+':', get_mu(mu, sigma))
+st.write(unicodeit.replace('\sigma_x')+':', get_sig(mu, sigma))
+st.write(unicodeit.replace('\mu_x_2')+':', get_mu(mu2, sigma2))
+st.write(unicodeit.replace('\sigma_x_2')+':', get_sig(mu2, sigma2))
+
+st.write('Expected outcomes for strats 1 and 2:', mu**years, mu2**years)
 
 # Try a checkbox to indicate if input is mu, sigma of norm, lognorm, or mu* sig*
 # self.summary = summarize() prints results?
