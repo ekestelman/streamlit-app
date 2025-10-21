@@ -1,10 +1,12 @@
 import streamlit as st
 
-st.write('# Welcome :wave:')
+#st.write('# Welcome to Eial\'s website :wave:')
+st.write('# Hello, I\'m  Eial!')
+#st.write('My name is Eial. I majored in pure mathematics and minored in astronomy at Stony Brook University. I currently work as a data analyst for the city of New York, and I like to write code for mathematically-oriented projects.')
 st.write('This is a place to explore my coding projects. So far I have only \
           included a few, but you can find my other projects on \
           [Github](https://github.com/ekestelman)!')
-st.write('View a summary of my projects below, or use the right panel to navigate to one.')
+st.write('View a summary of my projects below, or use the left panel to navigate to one.')
 st.write('## Contents')
 st.write('1. [Risk Over Time](#Risk-Over-Time)')
 st.write('2. [Wordle Solver](#Wordle-Solver)')

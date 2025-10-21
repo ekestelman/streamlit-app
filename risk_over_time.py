@@ -28,8 +28,8 @@ benchmark = .08
 principal = 1.  # type has to match st input type
 input_rows = 7  # nrows = ninputs
 
-st.write('# Welcome to my streamlit app :wave:')
-st.write('This is a place to explore my coding projects.')
+#st.write('# Welcome to my streamlit app :wave:')
+#st.write('This is a place to explore my coding projects.')
 st.write('## Investment Risk Over Time :chart:')
 st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results.')
 
