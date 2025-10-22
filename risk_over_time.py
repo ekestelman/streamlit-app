@@ -152,6 +152,12 @@ ax.vlines(benchmark, 0, 1, color='black', linestyles='--')
 ax.legend()
 st.pyplot(fig)
 
-
+# TODO in yearly_plot func, automatically set P(S>S') where S is strat with
+# either higher expected val or higher std. Also name strats/params consistently
+# (e.g., mu_A, mu_B)
+yearly_plot(strat1, strat2, 30, 2)
+# Need to run recalc?
+# strat1.recalc(years)
+# strat2.recalc(years)
 
 

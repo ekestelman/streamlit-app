@@ -145,11 +145,12 @@ def yearly_plot(strat1, strat2, stop, step, start=0):
     win[i], win_sem[i] = compare(strat1.roi_dstr, strat2.roi_dstr)
     # compare now takes results, not years. years needs to pass through strat obj
     # needs to make new strat object on each loop, or alter existing strat results
-  plt.errorbar(years, win, win_sem) 
-  plt.xlabel("Time")
-  plt.ylabel("P(A>B)")
-  plt.title("Probability of A outperforming B")
-  plt.show()
+  fig, ax = plt.subplots()
+  ax.errorbar(years, win, win_sem) 
+  ax.set_xlabel("Time")
+  ax.set_ylabel("P(A>B)")
+  ax.set_title("Probability of A outperforming B")
+  st.pyplot(fig)
   
 class Two_Strats:  # From previous draft---not in use.
   def __init__(self, mu, sigma, alt_mu, alt_sigma=0, years=1, principle=1e3, \
