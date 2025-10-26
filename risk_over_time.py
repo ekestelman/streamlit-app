@@ -32,7 +32,13 @@ input_rows = 7  # nrows = ninputs
 #st.write('# Welcome to my streamlit app :wave:')
 #st.write('This is a place to explore my coding projects.')
 st.write('## Investment Risk Over Time :chart:')
-st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results.')
+st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results!')
+st.write('Please note that if multiple parameters are changed too quickly, the program may not update correctly. If any text input does not match its slider, please try again.')
+# probably just need to wait 1 second for input val to update, not for whole
+# program to run.
+#st.write('Not sure what to input? See here for more details.')
+# jump to bottom, or collpsable section?
+# or an info button on each input label?
 
 # Changing values later does not change this line
 # Make sure that values match supposed inputs!
@@ -89,14 +95,18 @@ current_row += 1
 benchmark = input_grid[current_row][0].number_input('Benchmark Rate',
             value=benchmark,
             format='%.15g',
-            #on_change=update_inputs
+            key='bmark_input',
+            on_change=update_inputs,
+            args=['bmark_input']
             )
 benchmark = input_grid[current_row][1].slider(label='',
             min_value=-0.,
             max_value=.5,
             value=benchmark,
             format='%.15g',
-            #on_change=update_inputs
+            key='bmark_slide',
+            on_change=update_inputs,
+            args=['bmark_slide']
             )
 current_row += 1
 
@@ -112,7 +122,9 @@ mu = input_grid[current_row][0].number_input(label='Investment A: \
      # maybe this should be explained in a footnote?
      value=mu,
      format='%.15g',
-     #on_change=update_inputs
+     key='mu1_input',
+     on_change=update_inputs,
+     args=['mu1_input']
      )
 # TODO maybe take out the slider label if we also have the text input?
 # change slider step now that we have reduced the range?
@@ -121,8 +133,9 @@ mu = input_grid[current_row][1].slider(label='',
      max_value=.3,
      value=mu,
      format='%.15g',
-     key='mu1',
-     #on_change=update_inputs
+     key='mu1_slide',
+     on_change=update_inputs,
+     args=['mu1_slide']
      )
 current_row += 1
 sigma = input_grid[current_row][0].number_input(label='Investment A: \
@@ -130,15 +143,18 @@ sigma = input_grid[current_row][0].number_input(label='Investment A: \
         min_value=0.,
         value=sigma,
         format='%.15g',
-        #on_change=update_inputs
+        key='sig1_input',
+        on_change=update_inputs,
+        args=['sig1_input']
         )
 sigma = input_grid[current_row][1].slider('',
         min_value=0.,
         max_value=.3,
         value=sigma,
         format='%.15g',
-        key='sig1',
-        #on_change=update_inputs
+        key='sig1_slide',
+        on_change=update_inputs,
+        args=['sig1_slide']
         )
 current_row += 1
 
@@ -147,15 +163,18 @@ mu2 = input_grid[current_row][0].number_input(label='Investment B: \
       Expected Value',
       value=mu2,
       format='%.15g',
-      #on_change=update_inputs
+      key='mu2_input',
+      on_change=update_inputs,
+      args=['mu2_input']
       )
 mu2 = input_grid[current_row][1].slider(label='',
       min_value=-0.,
       max_value=.3,
       value=mu2,
       format='%.15g',
-      key='mu2',
-      #on_change=update_inputs
+      key='mu2_slide',
+      on_change=update_inputs,
+      args=['mu2_slide']
       )
 current_row += 1
 sigma2 = input_grid[current_row][0].number_input(label='Investment B: \
@@ -163,15 +182,18 @@ sigma2 = input_grid[current_row][0].number_input(label='Investment B: \
          min_value=0.,
          value=sigma2,
          format='%.15g',
-         #on_change=update_inputs
+         key='sig2_input',
+         on_change=update_inputs,
+         args=['sig2_input']
          )
 sigma2 = input_grid[current_row][1].slider('',
          min_value=0.,
          max_value=.3,
          value=sigma2,
          format='%.15g',
-         key='sig2',
-         #on_change=update_inputs
+         key='sig2_slide',
+         on_change=update_inputs,
+         args=['sig2_slide']
          )
 current_row += 1
 
@@ -226,6 +248,7 @@ ax.axvline(x=benchmark, color='black', ls='--',
            label='benchmark = ' + str(round(benchmark, 2)))
 ax.set_title('PDF')
 ax.set_xlabel('Amount')
+ax.set_ylabel('Probability Density')
 ax.legend()
 st.pyplot(fig)
 
