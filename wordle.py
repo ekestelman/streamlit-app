@@ -7,6 +7,7 @@ import wordle_lib.solver
 # this program needs has a lot of modules which will make the directory messy,
 # so I may try it later
 
+st.markdown('## Wordle Solver ⬛🟨🟩')
 st.markdown('For a given solution and initial guess, this program tries to solve the \
           Wordle puzzle! It is not a knockoff of the game&mdash;you have to choose the \
           initial guess _and_ the solution. It just shows a sequence of guesses that \

@@ -12,5 +12,5 @@ st.navigation([st.Page('landing_page.py', title='Hello World!',
                        icon=':material/public:'),
                st.Page('risk_over_time.py', title='Risk Over Time',
                        icon=':material/finance_mode:'),
-               st.Page('wordle.py', title='Wordle', icon=':material/flex_wrap:'), # or crossword?
+               st.Page('wordle.py', title='Wordle Solver', icon=':material/flex_wrap:'), # or crossword?
                ]).run()
