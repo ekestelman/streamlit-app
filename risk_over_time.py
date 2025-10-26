@@ -109,10 +109,16 @@ st.write(unicodeit.replace('\sigma')+':', sigma)
 st.write(unicodeit.replace('\mu_2')+':', mu2)
 st.write(unicodeit.replace('\sigma_2')+':', sigma2)
 
-st.write(unicodeit.replace('\mu_x')+':', get_mu(mu, sigma))
-st.write(unicodeit.replace('\sigma_x')+':', get_sig(mu, sigma))
-st.write(unicodeit.replace('\mu_x_2')+':', get_mu(mu2, sigma2))
-st.write(unicodeit.replace('\sigma_x_2')+':', get_sig(mu2, sigma2))
+# unicodeit seems to only support x and numbers as subscript, not Z.
+# Can use '<sub>Z</sub>' in st.write() with unsafe_allow_html=True
+# or '$_Z$'.
+#st.write(unicodeit.replace('\mu')+'<sub>Z</sub>:', get_mu(mu, sigma),
+#         unsafe_allow_html=True)
+st.write('$\mu_Z$:', get_mu(mu, sigma))
+#st.html(unicodeit.replace('\sigma')+'<sub>Z</sub>:' + str(get_sig(mu, sigma)))
+st.write('$\sigma_Z$:', get_sig(mu, sigma))
+st.write('$\mu_{Z_2}$:', get_mu(mu2, sigma2))
+st.write('$\sigma_{Z_2}$:', get_sig(mu2, sigma2))
 
 st.write('Expected outcomes for strats 1 and 2:', mu**years, mu2**years)
 
@@ -182,6 +188,7 @@ strat1.recalc(years)
 st.write(time() - tstart); tstart = time()
 
 st.write('yearly compare plot')
+# TODO button to flip A and B strats (show P(A>B) or P(B>A))
 # TODO in yearly_plot func, automatically set P(S>S') where S is strat with
 # either higher expected val or higher std. Also name strats/params consistently
 # (e.g., mu_A, mu_B)
