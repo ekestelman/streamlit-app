@@ -3,6 +3,7 @@ import streamlit as st
 import unicodeit
 from rot_lib.strats_module import *
 from scipy.stats import lognorm
+from time import time
 
 def update_inputs(param, src=None):
   # callback function
@@ -71,6 +72,7 @@ principal = input_grid[current_row][1].slider(label='', min_value=0., max_value=
             args=('principal_', 'slide'))
 current_row += 1
 
+# TODO option to exclude benchmark?
 benchmark = input_grid[current_row][0].number_input('Benchmark Rate', value=benchmark, format='%.15g')
 benchmark = input_grid[current_row][1].slider(label='', min_value=-0., max_value=.5, value=benchmark, format='%.15g')
 current_row += 1
@@ -114,24 +116,61 @@ st.write(unicodeit.replace('\sigma_x_2')+':', get_sig(mu2, sigma2))
 
 st.write('Expected outcomes for strats 1 and 2:', mu**years, mu2**years)
 
+tstart = time()
 # Try a checkbox to indicate if input is mu, sigma of norm, lognorm, or mu* sig*
 # self.summary = summarize() prints results?
 strat1 = Strat(mu, sigma, years, principal)
 strat2 = Strat(mu2, sigma2, years, principal)
 
 st.write('got strats')
+st.write(time() - tstart); tstart = time()
 
 compare(strat1.roi_dstr, strat2.roi_dstr, summary=True)
 # have to edit print commands
 st.write('done compare')
+st.write(time() - tstart); tstart = time()
 
+st.write('dstr_over_time plot')
+# Note: we set this to 15 years because the graph may look silly otherwise
 st.pyplot(strat1.dstr_over_time(years=15, normalize=True))
 strat1.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
+st.write(time() - tstart); tstart = time()
 
-st.write('done plot')
+st.write('yearly compare plot')
+# TODO in yearly_plot func, automatically set P(S>S') where S is strat with
+# either higher expected val or higher std. Also name strats/params consistently
+# (e.g., mu_A, mu_B)
+# TODO yearly_plot (compare) and dstr_over_time (single spread) could be made to
+# depend on years, or can be created just once with no need to change if
+# different years is chosen. Maybe should be moved to bottom instead of top?
+yearly_plot(strat1, strat2, stop=30, step=3)
+# Need to run recalc?
+strat1.recalc(years)
+strat2.recalc(years)
+# TODO this plot is slow! leave it last, or change the implementation.
+st.write(time() - tstart); tstart = time()
 
+st.write('pdf')
+fig, ax = plt.subplots()
+strats = [strat1.roi_dstr, strat2.roi_dstr]
+ax.hist(strats, 15 * int(strat1.years**0.5), 
+        density=True, 
+        label=[strat1.label, strat2.label])
+# for pdf
+#x = np.linspace(min(strats[0]), max(strats[0]), 1000)
+#ax.vlines(benchmark, 0, color='black', linestyles='--', label='Benchmark')
+ax.axvline(x=benchmark, color='black', ls='--', 
+           label='benchmark = ' + str(round(benchmark, 2)))
+ax.set_title('PDF')
+ax.set_xlabel('Amount')
+ax.legend()
+st.pyplot(fig)
+
+st.write(time() - tstart)
+
+st.write('cdf')
 # TODO more clever choice of graph bounds (use points of intersection?)
 # and/or interactive plots
 # split page for less scrolling
@@ -148,16 +187,10 @@ if inverse:
 else:
   ax.set_ylabel('P(<x)')
   ax.set_title('CDF (chance of ending with at most x)')
-ax.vlines(benchmark, 0, 1, color='black', linestyles='--')
+ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
+          label='benchmark = ' + str(round(benchmark, 2)))
 ax.legend()
 st.pyplot(fig)
 
-# TODO in yearly_plot func, automatically set P(S>S') where S is strat with
-# either higher expected val or higher std. Also name strats/params consistently
-# (e.g., mu_A, mu_B)
-yearly_plot(strat1, strat2, 30, 2)
-# Need to run recalc?
-# strat1.recalc(years)
-# strat2.recalc(years)
-
+st.write(time() - tstart); tstart = time()
 
