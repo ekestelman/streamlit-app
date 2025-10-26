@@ -130,28 +130,6 @@ compare(strat1.roi_dstr, strat2.roi_dstr, summary=True)
 st.write('done compare')
 st.write(time() - tstart); tstart = time()
 
-st.write('dstr_over_time plot')
-# Note: we set this to 15 years because the graph may look silly otherwise
-st.pyplot(strat1.dstr_over_time(years=15, normalize=True))
-strat1.recalc(years)
-# Can try executing recalc in dstr func call, or find out how to rerun otherwise.
-# time set doesn't really matter for this graph
-st.write(time() - tstart); tstart = time()
-
-st.write('yearly compare plot')
-# TODO in yearly_plot func, automatically set P(S>S') where S is strat with
-# either higher expected val or higher std. Also name strats/params consistently
-# (e.g., mu_A, mu_B)
-# TODO yearly_plot (compare) and dstr_over_time (single spread) could be made to
-# depend on years, or can be created just once with no need to change if
-# different years is chosen. Maybe should be moved to bottom instead of top?
-yearly_plot(strat1, strat2, stop=30, step=3)
-# Need to run recalc?
-strat1.recalc(years)
-strat2.recalc(years)
-# TODO this plot is slow! leave it last, or change the implementation.
-st.write(time() - tstart); tstart = time()
-
 st.write('pdf')
 fig, ax = plt.subplots()
 strats = [strat1.roi_dstr, strat2.roi_dstr]
@@ -161,6 +139,7 @@ ax.hist(strats, 15 * int(strat1.years**0.5),
 # for pdf
 #x = np.linspace(min(strats[0]), max(strats[0]), 1000)
 #ax.vlines(benchmark, 0, color='black', linestyles='--', label='Benchmark')
+# TODO param show_benchmark T/F
 ax.axvline(x=benchmark, color='black', ls='--', 
            label='benchmark = ' + str(round(benchmark, 2)))
 ax.set_title('PDF')
@@ -168,7 +147,7 @@ ax.set_xlabel('Amount')
 ax.legend()
 st.pyplot(fig)
 
-st.write(time() - tstart)
+st.write(time() - tstart); tstart = time()
 
 st.write('cdf')
 # TODO more clever choice of graph bounds (use points of intersection?)
@@ -192,5 +171,27 @@ ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
 ax.legend()
 st.pyplot(fig)
 
+st.write(time() - tstart); tstart = time()
+
+st.write('dstr_over_time plot')
+# Note: we set this to 15 years because the graph may look silly otherwise
+st.pyplot(strat1.dstr_over_time(years=15, normalize=True))
+strat1.recalc(years)
+# Can try executing recalc in dstr func call, or find out how to rerun otherwise.
+# time set doesn't really matter for this graph
+st.write(time() - tstart); tstart = time()
+
+st.write('yearly compare plot')
+# TODO in yearly_plot func, automatically set P(S>S') where S is strat with
+# either higher expected val or higher std. Also name strats/params consistently
+# (e.g., mu_A, mu_B)
+# TODO yearly_plot (compare) and dstr_over_time (single spread) could be made to
+# depend on years, or can be created just once with no need to change if
+# different years is chosen. Maybe should be moved to bottom instead of top?
+yearly_plot(strat1, strat2, stop=30, step=3)
+# Need to run recalc?
+strat1.recalc(years)
+strat2.recalc(years)
+# TODO this plot is slow! leave it last, or change the implementation.
 st.write(time() - tstart); tstart = time()
 
