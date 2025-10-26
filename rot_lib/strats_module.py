@@ -252,12 +252,16 @@ class Strat:
     if not years:
       years = self.years   # Better way to set default?
     # Default year range to years attribute, option to set different range.
-    interval = 0.9  # Get the middle 50% of results.
+    interval = 0.9  # Get the middle _% of results.
     interval /= 2   # For later arithmetic.
     mid = []
     high = []
     low = []
     curves = [low, mid, high]
+    curves = {'low': low, 'mid': mid, 'high': high}
+    colors = {'low': 'tab:cyan', 'mid': 'tab:blue', 'high': 'tab:cyan'}
+    labels = {'mid': 'mean', 'high': 'middle ' + ('%g' % (interval*200)) + '%',
+              'low': None}
     # TODO way to skip years like in yearly_plot
     step = 1
     # FIXME use similar soln to yearly_plot for years messing up in plot if
@@ -275,12 +279,12 @@ class Strat:
       high.append(np.quantile(dstr, 0.5 - interval))
       # Confirm that curves list is behaving as expected
     fig, ax = plt.subplots()
-    for elm in curves:
+    for key in curves:
       # Use nested list comprehension?
       if normalize:
-        elm = [_ / self.principle for _ in elm]
+        curves[key] = [_ / self.principle for _ in curves[key]]
         # Confirm the elements are changing as expected
-      ax.plot(elm)
+      ax.plot(curves[key], color=colors[key], label=labels[key])
     #for i in range(3):
     #  if normalize:
     #    curves[i] = [_ / self.principle for _ in curves[i]]
@@ -293,6 +297,7 @@ class Strat:
     # Consider how title may work if we implement interactive plots
     ax.set_title("Projected Growth Over Time\n$\mu *= $" + str(round(self.mu_star,4)) + \
               "    $\sigma *$ = " + str(round(self.sig_star,4)))
+    ax.legend()
     return fig
     plt.show()
 

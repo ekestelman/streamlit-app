@@ -33,7 +33,7 @@ input_rows = 7  # nrows = ninputs
 #st.write('This is a place to explore my coding projects.')
 st.write('## Investment Risk Over Time :chart:')
 st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results!')
-st.write('Please note that if multiple parameters are changed too quickly, the program may not update correctly. If any text input does not match its slider, please try again.')
+st.write('Please wait one second between changing multiple parameters to ensure the program updates correctly. If any text input does not match its slider, please try again.')
 # probably just need to wait 1 second for input val to update, not for whole
 # program to run.
 #st.write('Not sure what to input? See here for more details.')
@@ -158,7 +158,6 @@ sigma = input_grid[current_row][1].slider('',
         )
 current_row += 1
 
-# XXX left off: editing labels, labels too long (text wraps), slider doesn't update input after for benchmark and onwards!!!
 mu2 = input_grid[current_row][0].number_input(label='Investment B: \
       Expected Value',
       value=mu2,
@@ -280,8 +279,12 @@ st.write(time() - tstart); tstart = time()
 
 st.write('dstr_over_time plot')
 # Note: we set this to 15 years because the graph may look silly otherwise
-st.pyplot(strat1.dstr_over_time(years=15, normalize=True))
+# May still look good if we use a smaller interval...
+# set interval with input? currently hardcoded in strats_module
+st.pyplot(strat1.dstr_over_time(years=15, normalize=False))
+#st.pyplot(strat2.dstr_over_time(years=15, normalize=False))
 strat1.recalc(years)
+#strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
 st.write(time() - tstart); tstart = time()
