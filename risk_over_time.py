@@ -52,56 +52,132 @@ input_grid = [st.columns([1,2]) for _ in range(input_rows)]
 # this only happens when the changes are made before the program fully runs! If it is
 # allowed to run fully, then this does not occur.
 current_row = 0
-years = input_grid[current_row][0].number_input(label='Time (truncates to integer)',
-        min_value=0, value=years, key='time_input', on_change=update_inputs, 
+# time could be in years, but really just needs to be consistent with time
+# unit of other inputs. Consider an explanation section.
+years = input_grid[current_row][0].number_input(
+        label='Time', # truncates to integer (obvious)
+        min_value=0, value=years, key='time_input', on_change=update_inputs,
         args=['time_input'])
 years = input_grid[current_row][1].slider(label='', min_value=0, max_value=60, 
-        value=years, key='time_slide', on_change=update_inputs, args=['time_slide'])
+        value=years, key='time_slide', on_change=update_inputs,
+        args=['time_slide'])
 current_row += 1
 
 # XXX Projected growth plot is normalized and does not depend on principal, want to 
 # change this?
 # CDF is using principal.
-principal = input_grid[current_row][0].number_input(label='Principal', min_value=0.,
-            value=principal, step=.1, key='principal_input', on_change=update_inputs,
+principal = input_grid[current_row][0].number_input(label='Principle', # any units
+            min_value=0.,
+            value=principal,
+            step=.1,
+            key='principal_input',
+            on_change=update_inputs,
             args=('principal_', 'input'))
 # Makes more sense to give options in thousands?
 # .1 step might represent $100
-principal = input_grid[current_row][1].slider(label='', min_value=0., max_value=50.,
-            value=principal, step=.1, key='principal_slide', on_change=update_inputs,
+principal = input_grid[current_row][1].slider(label='',
+            min_value=0.,
+            max_value=50.,
+            value=principal,
+            step=.1,
+            key='principal_slide',
+            on_change=update_inputs,
             args=('principal_', 'slide'))
 current_row += 1
 
 # TODO option to exclude benchmark?
-benchmark = input_grid[current_row][0].number_input('Benchmark Rate', value=benchmark, format='%.15g')
-benchmark = input_grid[current_row][1].slider(label='', min_value=-0., max_value=.5, value=benchmark, format='%.15g')
+benchmark = input_grid[current_row][0].number_input('Benchmark Rate',
+            value=benchmark,
+            format='%.15g',
+            #on_change=update_inputs
+            )
+benchmark = input_grid[current_row][1].slider(label='',
+            min_value=-0.,
+            max_value=.5,
+            value=benchmark,
+            format='%.15g',
+            #on_change=update_inputs
+            )
 current_row += 1
 
+yrly_bmark = benchmark  # keep for later
 benchmark = (1 + benchmark) ** years * principal
 
 # format = '%.' + [decimal places] + 'g' for 'general' format
 # can use min_value and max_value to restrict inputs for number_input
 # need key for sliders if labels (and all args) are repeated
-mu = input_grid[current_row][0].number_input(label=unicodeit.replace('\mu^*'), value=mu, format='%.15g')
+mu = input_grid[current_row][0].number_input(label='Investment A: \
+     Expected Value',# \
+     # + ' (the mean of the lognormal distribution is this input + 1',
+     # maybe this should be explained in a footnote?
+     value=mu,
+     format='%.15g',
+     #on_change=update_inputs
+     )
 # TODO maybe take out the slider label if we also have the text input?
 # change slider step now that we have reduced the range?
-mu = input_grid[current_row][1].slider(label='', min_value=-0., max_value=.3, value=mu, format='%.15g', key='mu1')
+mu = input_grid[current_row][1].slider(label='',
+     min_value=-0.,
+     max_value=.3,
+     value=mu,
+     format='%.15g',
+     key='mu1',
+     #on_change=update_inputs
+     )
 current_row += 1
-sigma = input_grid[current_row][0].number_input(label=unicodeit.replace('\sigma^*'), \
-                        min_value=0., value=sigma, format='%.15g')
-sigma = input_grid[current_row][1].slider('', min_value=0., max_value=.3, value=sigma, format='%.15g', key='sig1')
+sigma = input_grid[current_row][0].number_input(label='Investment A: \
+        Standard Deviation',
+        min_value=0.,
+        value=sigma,
+        format='%.15g',
+        #on_change=update_inputs
+        )
+sigma = input_grid[current_row][1].slider('',
+        min_value=0.,
+        max_value=.3,
+        value=sigma,
+        format='%.15g',
+        key='sig1',
+        #on_change=update_inputs
+        )
 current_row += 1
 
-mu2 = input_grid[current_row][0].number_input(label=unicodeit.replace('\mu^*_2'), value=mu2, format='%.15g')
-mu2 = input_grid[current_row][1].slider(label='', min_value=-0., max_value=.3, value=mu2, format='%.15g', key='mu2')
+# XXX left off: editing labels, labels too long (text wraps), slider doesn't update input after for benchmark and onwards!!!
+mu2 = input_grid[current_row][0].number_input(label='Investment B: \
+      Expected Value',
+      value=mu2,
+      format='%.15g',
+      #on_change=update_inputs
+      )
+mu2 = input_grid[current_row][1].slider(label='',
+      min_value=-0.,
+      max_value=.3,
+      value=mu2,
+      format='%.15g',
+      key='mu2',
+      #on_change=update_inputs
+      )
 current_row += 1
-sigma2 = input_grid[current_row][0].number_input(label=unicodeit.replace('\sigma^*_2'), \
-                         min_value=0., value=sigma2, format='%.15g')
-sigma2 = input_grid[current_row][1].slider('', min_value=0., max_value=.3, value=sigma2, format='%.15g', key='sig2')
+sigma2 = input_grid[current_row][0].number_input(label='Investment B: \
+         Standard Deviation',
+         min_value=0.,
+         value=sigma2,
+         format='%.15g',
+         #on_change=update_inputs
+         )
+sigma2 = input_grid[current_row][1].slider('',
+         min_value=0.,
+         max_value=.3,
+         value=sigma2,
+         format='%.15g',
+         key='sig2',
+         #on_change=update_inputs
+         )
 current_row += 1
 
 st.write('Years:', years)
 st.write('Principle:', principal)
+st.write('Yearly Bmark:', yrly_bmark)
 st.write('Benchmark:', benchmark)
 mu += 1; mu2 += 1
 st.write(unicodeit.replace('\mu')+':', mu)
@@ -195,7 +271,7 @@ st.write('yearly compare plot')
 # TODO yearly_plot (compare) and dstr_over_time (single spread) could be made to
 # depend on years, or can be created just once with no need to change if
 # different years is chosen. Maybe should be moved to bottom instead of top?
-yearly_plot(strat1, strat2, stop=30, step=3)
+yearly_plot(strat1, strat2, stop=30, step=5)
 # Need to run recalc?
 strat1.recalc(years)
 strat2.recalc(years)
