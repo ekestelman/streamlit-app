@@ -33,7 +33,8 @@ input_rows = 7  # nrows = ninputs
 #st.write('This is a place to explore my coding projects.')
 st.write('## Investment Risk Over Time :chart:')
 st.write('This project is for comparing investments of different expected returns and variances. Choose the following parameters, and see the results!')
-st.write('Please wait one second between changing multiple parameters to ensure the program updates correctly. If any text input does not match its slider, please try again.')
+st.write('Refreshing resets all inputs to defaults. Please wait one second between changing multiple parameters to ensure the program updates correctly. If any text input does not match its slider, please try again.')
+st.write('The program works by modeling investment growth using geometric Brownian motion (GBM). The assumption is that returns are lognormally distributed. This may not always be a good assumption! This tool is meant to be fun, and aid (or challenge) our intuition about probability. You are responsible for your own financial decisions.')
 # probably just need to wait 1 second for input val to update, not for whole
 # program to run.
 #st.write('Not sure what to input? See here for more details.')
@@ -42,7 +43,7 @@ st.write('Please wait one second between changing multiple parameters to ensure 
 
 # Changing values later does not change this line
 # Make sure that values match supposed inputs!
-st.write(years, principal, benchmark, mu, sigma, mu2, sigma2)
+#st.write(years, principal, benchmark, mu, sigma, mu2, sigma2)
 
 # border arg only in later versions
 col1, col2 = st.columns([1,2], vertical_alignment='center')
