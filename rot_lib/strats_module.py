@@ -146,7 +146,7 @@ def yearly_plot(strat1, strat2, stop, step, start=0):
     # compare now takes results, not years. years needs to pass through strat obj
     # needs to make new strat object on each loop, or alter existing strat results
   fig, ax = plt.subplots()
-  ax.errorbar(years, win, win_sem) 
+  ax.errorbar(years, win, win_sem, color='tab:purple') 
   ax.set_xlabel("Time")
   ax.set_ylabel("P(A>B)")
   ax.set_title("Probability of A outperforming B")
@@ -244,7 +244,8 @@ class Strat:
     #plt.plot(x,y)
     #plt.show()
 
-  def dstr_over_time(self, years=0, normalize=False):
+  def dstr_over_time(self, years=0, normalize=False, alt_colo=False):
+    # alt_colo = alternate colorscheme (consider numbering or naming cs)
     # TODO overlay both strats on same graph (interactive: toggle which strat,
     # which confidence intervals to show)
     # TODO plot multiple confidence intervals on same plot---gives more insight
@@ -260,6 +261,8 @@ class Strat:
     curves = [low, mid, high]
     curves = {'low': low, 'mid': mid, 'high': high}
     colors = {'low': 'tab:cyan', 'mid': 'tab:blue', 'high': 'tab:cyan'}
+    if alt_colo:
+      colors = {'low': 'tab:olive', 'mid': 'tab:orange', 'high': 'tab:olive'}
     labels = {'mid': 'mean', 'high': 'middle ' + ('%g' % (interval*200)) + '%',
               'low': None}
     # TODO way to skip years like in yearly_plot
