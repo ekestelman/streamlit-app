@@ -278,13 +278,22 @@ st.pyplot(fig)
 st.write(time() - tstart); tstart = time()
 
 st.write('dstr_over_time plot')
+if 0:
+  # show two plots side by side
+  dot_plot_grid = st.columns([1, 1]) # [1,1] is relative width of 2 cols
+  dot_plot_grid[0].pyplot(strat1.dstr_over_time(years=15, normalize=False))
+  dot_plot_grid[1].pyplot(strat2.dstr_over_time(years=15, normalize=False))
+  strat1.recalc(years)
+  strat2.recalc(years)
 # Note: we set this to 15 years because the graph may look silly otherwise
 # May still look good if we use a smaller interval...
 # set interval with input? currently hardcoded in strats_module
-st.pyplot(strat1.dstr_over_time(years=15, normalize=False))
-#st.pyplot(strat2.dstr_over_time(years=15, normalize=False))
-strat1.recalc(years)
-#strat2.recalc(years)
+else:
+  # show only one plot, or both in series
+  st.pyplot(strat1.dstr_over_time(years=15, normalize=False))
+  strat1.recalc(years)
+  st.pyplot(strat2.dstr_over_time(years=15, normalize=False, alt_colo=True))
+  strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
 st.write(time() - tstart); tstart = time()
