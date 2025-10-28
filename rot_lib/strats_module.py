@@ -44,7 +44,9 @@ def roi_dstr(years, mu, sigma, trials=10000, principle=1e3):
 def summarize(results, years = None):
   # Should pass entire object so we can print mu and std?
   # ^No need if we just have this as a class method
-  if years:
+  #if years:
+  # is this useful for anything? at least getting rid of the print statement
+  if 0:
     pass
     yearly_roi = [x ** (1 / years) for x in results] # Need to know nyears
     st.write("Mean: ", np.mean(yearly_roi), "+/-")
@@ -130,6 +132,7 @@ def compare(results, alt_results, summary=False):#years, summary=False):
     # alt_result is strat2.roi_dstr. What does this return when sigma=0?
     # (Returns what we want)
     # TODO consider defining mu differently (APY vs APR)
+    st.write('---Probability that A outperforms B at time t---')
     st.write("\nP(A>B): ", win, "+/-", \
           round(win_sem,int(np.log10(trials))))
   return win, win_sem
@@ -174,6 +177,9 @@ class Strat:
   # TODO method to plot pdf, cdf, etc. along with another strat object passed
   # as arg
   def __init__(self, mu, sigma=0, years=1, principle=1e3, trials=10000):
+    # as of 2025-10-27: inputs mu and sigma correspond to mu-1 and sigma of the
+    # lognormal. get_mu and get_sigma give mu and sigma of the underlying normal
+    # distribution, which is used as the input for the PDF, CDF, and scipy funcs.
     self.mu_star = mu  # Median
     self.sig_star = sigma  # Scatter?
     self.mu = get_mu(mu, sigma)
@@ -189,7 +195,10 @@ class Strat:
     self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
     self.summary = summarize(self.roi_dstr, self.years)
     # ^Should this be a method?
-    self.label = "$\mu *=$"+str(mu)+", $\sigma *=$"+str(sigma)
+    #self.label = "$\mu *=$"+str(mu)+", $\sigma *=$"+str(sigma)
+    # self.label keeps the mu, sigma input values, not the new parameter!
+    # (this is good)
+    self.label = "$\mu =$"+str(mu)+", $\sigma =$"+str(sigma)
 
   def print_summary(self):
     print_summary(self.summary)
@@ -260,9 +269,16 @@ class Strat:
     low = []
     curves = [low, mid, high]
     curves = {'low': low, 'mid': mid, 'high': high}
-    colors = {'low': 'tab:cyan', 'mid': 'tab:blue', 'high': 'tab:cyan'}
+    #colors = {'low': 'tab:cyan', 'mid': 'tab:blue', 'high': 'tab:cyan'}
+    co1 = 'tab:blue'
+    co2 = 'tab:cyan'
     if alt_colo:
-      colors = {'low': 'tab:olive', 'mid': 'tab:orange', 'high': 'tab:olive'}
+      #colors = {'low': 'tab:olive', 'mid': 'tab:orange', 'high': 'tab:olive'}
+      #colors = {'low': 'tab:orange', 'mid': 'tab:red', 'high': 'tab:orange'}
+      co1 = 'tab:orange'
+      co2 = 'xkcd:goldenrod'
+    colors = {curve: co2 for curve in ['low', 'high']}
+    colors['mid'] = co1
     labels = {'mid': 'mean', 'high': 'middle ' + ('%g' % (interval*200)) + '%',
               'low': None}
     # TODO way to skip years like in yearly_plot
@@ -298,8 +314,7 @@ class Strat:
     ax.set_xlabel("Time")
     ax.set_ylabel("Amount")
     # Consider how title may work if we implement interactive plots
-    ax.set_title("Projected Growth Over Time\n$\mu *= $" + str(round(self.mu_star,4)) + \
-              "    $\sigma *$ = " + str(round(self.sig_star,4)))
+    ax.set_title(f'Projected Growth Over Time\n{self.label}')
     ax.legend()
     return fig
     plt.show()

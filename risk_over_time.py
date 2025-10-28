@@ -29,6 +29,7 @@ benchmark = .08
 principal = 1.  # type has to match st input type
 input_rows = 7  # nrows = ninputs
 
+#TODO add contents
 #st.write('# Welcome to my streamlit app :wave:')
 #st.write('This is a place to explore my coding projects.')
 st.write('## Investment Risk Over Time :chart:')
@@ -220,8 +221,12 @@ with st.expander('Debug Outputs'):
   st.write('$\mu_{Z_2}$:', get_mu(mu2, sigma2))
   st.write('$\sigma_{Z_2}$:', get_sig(mu2, sigma2))
 
-st.write('Expected outcome for investment A:', round(mu**years, 2))
-st.write('Expected outcome for invesmtnet B:', round(mu2**years, 2))
+st.write('The following are the theoretical expected values. '
+         'The rest of the program uses Monte Carlo methods. '
+         'Check back for updates that replace simulated results '
+         'with analytical results.')
+st.write('Expected outcome for investment A:', round(principal*mu**years, 2))
+st.write('Expected outcome for invesmtnet B:', round(principal*mu2**years, 2))
 
 tstart = time()
 # Try a checkbox to indicate if input is mu, sigma of norm, lognorm, or mu* sig*
@@ -229,15 +234,16 @@ tstart = time()
 strat1 = Strat(mu, sigma, years, principal)
 strat2 = Strat(mu2, sigma2, years, principal)
 
-st.write('got strats')
-st.write(time() - tstart); tstart = time()
+#st.write('got strats')
+#st.write(time() - tstart); tstart = time()
 
+st.write('### Summary of Investments A and B')
 compare(strat1.roi_dstr, strat2.roi_dstr, summary=True)
 # have to edit print commands
-st.write('done compare')
-st.write(time() - tstart); tstart = time()
+#st.write('done compare')
+#st.write(time() - tstart); tstart = time()
 
-st.write('pdf')
+st.write(f'### Probability Density Function at Time $t = {years}$')
 fig, ax = plt.subplots()
 strats = [strat1.roi_dstr, strat2.roi_dstr]
 ax.hist(strats, 15 * int(strat1.years**0.5), 
@@ -248,16 +254,23 @@ ax.hist(strats, 15 * int(strat1.years**0.5),
 #ax.vlines(benchmark, 0, color='black', linestyles='--', label='Benchmark')
 # TODO param show_benchmark T/F
 ax.axvline(x=benchmark, color='black', ls='--', 
-           label='benchmark = ' + str(round(benchmark, 2)))
+           #label='benchmark = ' + str(round(benchmark, 2)))
+           #label=f'benchmark = {yrly_bmark}')
+           #label=f'${bmark_yrly}^{years}=$' + str(round(benchmark, 2)))
+           label=f'${principal} \cdot {1+yrly_bmark}^{{{years}}} = '
+                 f'{round(benchmark, 2)}$')
+           # If we want a label like this, we might also want it to account for
+           # principle.
 ax.set_title('PDF')
 ax.set_xlabel('Amount')
 ax.set_ylabel('Probability Density')
 ax.legend()
 st.pyplot(fig)
 
-st.write(time() - tstart); tstart = time()
+#st.write(time() - tstart); tstart = time()
 
-st.write('cdf')
+st.write(f'### Complement of Cumulative Distribution Function at Time '
+         f'$t = {years}$')
 # TODO more clever choice of graph bounds (use points of intersection?)
 # and/or interactive plots
 # split page for less scrolling
@@ -275,13 +288,17 @@ else:
   ax.set_ylabel('P(<x)')
   ax.set_title('CDF (chance of ending with at most x)')
 ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
-          label='benchmark = ' + str(round(benchmark, 2)))
+          #label='benchmark = ' + str(round(benchmark, 2)))
+          #label=f'benchmark = {yrly_bmark}')
+          # TODO omit principle coefficient if 1?
+          label=f'${principal} \cdot {1+yrly_bmark}^{{{years}}} = '
+                f'{round(benchmark, 2)}$')
 ax.legend()
 st.pyplot(fig)
 
-st.write(time() - tstart); tstart = time()
+#st.write(time() - tstart); tstart = time()
 
-st.write('dstr_over_time plot')
+st.write('### Projected Returns Over Time')
 if 0:
   # show two plots side by side
   dot_plot_grid = st.columns([1, 1]) # [1,1] is relative width of 2 cols
@@ -300,9 +317,9 @@ else:
   strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
-st.write(time() - tstart); tstart = time()
+#st.write(time() - tstart); tstart = time()
 
-st.write('yearly compare plot')
+st.write('### Comparison Over Time')
 # TODO button to flip A and B strats (show P(A>B) or P(B>A))
 # TODO in yearly_plot func, automatically set P(S>S') where S is strat with
 # either higher expected val or higher std. Also name strats/params consistently
@@ -315,5 +332,5 @@ yearly_plot(strat1, strat2, stop=30, step=5)
 strat1.recalc(years)
 strat2.recalc(years)
 # TODO this plot is slow! leave it last, or change the implementation.
-st.write(time() - tstart); tstart = time()
+#st.write(time() - tstart); tstart = time()
 
