@@ -197,28 +197,31 @@ sigma2 = input_grid[current_row][1].slider('',
          )
 current_row += 1
 
-st.write('Years:', years)
-st.write('Principle:', principal)
-st.write('Yearly Bmark:', yrly_bmark)
-st.write('Benchmark:', benchmark)
-mu += 1; mu2 += 1
-st.write(unicodeit.replace('\mu')+':', mu)
-st.write(unicodeit.replace('\sigma')+':', sigma)
-st.write(unicodeit.replace('\mu_2')+':', mu2)
-st.write(unicodeit.replace('\sigma_2')+':', sigma2)
+with st.expander('Debug Outputs'):
+  st.write('This section just shows some of the parameters, which is useful to check that things are working properly. You may ignore this section.')
+  st.write('Years:', years)
+  st.write('Principle:', principal)
+  st.write('Yearly Bmark:', yrly_bmark)
+  st.write('Benchmark:', benchmark)
+  mu += 1; mu2 += 1
+  st.write(unicodeit.replace('\mu')+':', mu)
+  st.write(unicodeit.replace('\sigma')+':', sigma)
+  st.write(unicodeit.replace('\mu_2')+':', mu2)
+  st.write(unicodeit.replace('\sigma_2')+':', sigma2)
+  
+  # unicodeit seems to only support x and numbers as subscript, not Z.
+  # Can use '<sub>Z</sub>' in st.write() with unsafe_allow_html=True
+  # or '$_Z$'.
+  #st.write(unicodeit.replace('\mu')+'<sub>Z</sub>:', get_mu(mu, sigma),
+  #         unsafe_allow_html=True)
+  st.write('$\mu_Z$:', get_mu(mu, sigma))
+  #st.html(unicodeit.replace('\sigma')+'<sub>Z</sub>:' + str(get_sig(mu, sigma)))
+  st.write('$\sigma_Z$:', get_sig(mu, sigma))
+  st.write('$\mu_{Z_2}$:', get_mu(mu2, sigma2))
+  st.write('$\sigma_{Z_2}$:', get_sig(mu2, sigma2))
 
-# unicodeit seems to only support x and numbers as subscript, not Z.
-# Can use '<sub>Z</sub>' in st.write() with unsafe_allow_html=True
-# or '$_Z$'.
-#st.write(unicodeit.replace('\mu')+'<sub>Z</sub>:', get_mu(mu, sigma),
-#         unsafe_allow_html=True)
-st.write('$\mu_Z$:', get_mu(mu, sigma))
-#st.html(unicodeit.replace('\sigma')+'<sub>Z</sub>:' + str(get_sig(mu, sigma)))
-st.write('$\sigma_Z$:', get_sig(mu, sigma))
-st.write('$\mu_{Z_2}$:', get_mu(mu2, sigma2))
-st.write('$\sigma_{Z_2}$:', get_sig(mu2, sigma2))
-
-st.write('Expected outcomes for strats 1 and 2:', mu**years, mu2**years)
+st.write('Expected outcome for investment A:', round(mu**years, 2))
+st.write('Expected outcome for invesmtnet B:', round(mu2**years, 2))
 
 tstart = time()
 # Try a checkbox to indicate if input is mu, sigma of norm, lognorm, or mu* sig*
