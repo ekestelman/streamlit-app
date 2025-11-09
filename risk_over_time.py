@@ -241,7 +241,8 @@ st.write('### Summary of Investments A and B')
 compare(strat1.roi_dstr, strat2.roi_dstr, summary=True)
 # have to edit print commands
 #st.write('done compare')
-#st.write(time() - tstart); tstart = time()
+#st.write(time() - tstart);
+tstart = time()
 
 st.write(f'### Probability Density Function at Time $t = {years}$')
 fig, ax = plt.subplots()
@@ -267,7 +268,7 @@ ax.set_ylabel('Probability Density')
 ax.legend()
 st.pyplot(fig)
 
-#st.write(time() - tstart); tstart = time()
+st.write(round(time() - tstart, 3)); tstart = time()
 
 st.write(f'### Complement of Cumulative Distribution Function at Time '
          f'$t = {years}$')
@@ -296,7 +297,7 @@ ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
 ax.legend()
 st.pyplot(fig)
 
-#st.write(time() - tstart); tstart = time()
+st.write(round(time() - tstart, 3)); tstart = time()
 
 st.write('### Projected Returns Over Time')
 if 0:
@@ -317,7 +318,7 @@ else:
   strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
-#st.write(time() - tstart); tstart = time()
+st.write(round(time() - tstart, 3); tstart = time()
 
 st.write('### Comparison Over Time')
 # TODO button to flip A and B strats (show P(A>B) or P(B>A))
@@ -332,5 +333,5 @@ yearly_plot(strat1, strat2, stop=30, step=5)
 strat1.recalc(years)
 strat2.recalc(years)
 # TODO this plot is slow! leave it last, or change the implementation.
-#st.write(time() - tstart); tstart = time()
+st.write(round(time() - tstart, 3)); tstart = time()
 
