@@ -318,7 +318,7 @@ else:
   strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
-st.write(round(time() - tstart, 3); tstart = time()
+st.write(round(time() - tstart, 3)); tstart = time()
 
 st.write('### Comparison Over Time')
 # TODO button to flip A and B strats (show P(A>B) or P(B>A))
