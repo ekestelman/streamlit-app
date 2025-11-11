@@ -9,8 +9,8 @@ st.write('This is a place to explore my coding projects. So far I have only \
           [Github](https://github.com/ekestelman)!')
 st.write('View a summary of my projects below, or use the left panel to navigate to one.')
 st.write('## Contents')
-st.write('1. [Risk Over Time](#Risk-Over-Time)')
-st.write('2. [Wordle Solver](#Wordle-Solver)')
+st.write('1. [Risk Over Time](#risk-over-time)')
+st.write('2. [Wordle Solver](#wordle-solver)')
 st.write('## Risk Over Time')
 st.write('In this project, we explore the relationship between investment risk and time \
           scales.')
