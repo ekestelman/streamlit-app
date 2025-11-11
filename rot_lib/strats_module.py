@@ -6,6 +6,7 @@ import streamlit as st
 
 # mu_x, sig_x are mean and std of lognorm. mu and sig are mean and std
 # of the underlying normal distribution, and the parameters for lognorm.
+# (they could be named mu_Z and sig_Z)
 def get_mu(mu_x, sig_x):
   mu = np.log(mu_x**2 / (mu_x**2 + sig_x**2)**0.5)
   # Truly want the inverse of this? No! This gives parameters of the underlying
@@ -21,7 +22,7 @@ def get_sig(mu_x, sig_x):
   # This sig_x should correspond to sig*-1 on lognormal wikipedia page.
   return sig
 
-def roi_dstr(years, mu, sigma, trials=10000, principle=1e3):
+def roi_dstr(years, mu, sigma, trials=10**4, principle=1e3):
 # Distribution of possible returns on investment.
 # TODO trials should be int
 
@@ -39,6 +40,15 @@ def roi_dstr(years, mu, sigma, trials=10000, principle=1e3):
     results = [principle * np.exp(mu*years)]
   
   return results
+
+# not actually using this
+def one_yr_sim(principle, mu, sigma):
+  if type(principle) != list:
+    principle = list(principle)
+  balance = []
+  for p in principle:
+    balance.append(np.random.lognormal(mu, sigma) * p)
+
 
 # XXX Get rid of this, integrate it into print_summary()
 def summarize(results, years = None):
@@ -253,7 +263,8 @@ class Strat:
     #plt.plot(x,y)
     #plt.show()
 
-  def dstr_over_time(self, years=0, normalize=False, alt_colo=False):
+  def dstr_over_time(self, years=0, normalize=False, alt_colo=False,
+                     interval=.9, nsamples=10**4):
     # alt_colo = alternate colorscheme (consider numbering or naming cs)
     # TODO overlay both strats on same graph (interactive: toggle which strat,
     # which confidence intervals to show)
@@ -262,11 +273,13 @@ class Strat:
     if not years:
       years = self.years   # Better way to set default?
     # Default year range to years attribute, option to set different range.
-    interval = 0.9  # Get the middle _% of results.
+    #interval = 0.9  # Get the middle _% of results.
+    # Get middle [interval]% of results.
     interval /= 2   # For later arithmetic.
     mid = []
     high = []
     low = []
+    mid = [self.principle]; low = [self.principle]; high = [self.principle]
     curves = [low, mid, high]
     curves = {'low': low, 'mid': mid, 'high': high}
     #colors = {'low': 'tab:cyan', 'mid': 'tab:blue', 'high': 'tab:cyan'}
@@ -288,11 +301,15 @@ class Strat:
     #for i in range(step, years, step): # Causes other problems (loop should not start at step or jump.
     # Do functions work as expected if years=0?
     # Faster to start loop at 1 (0 is trivially).
-    for i in range(years+1):
-      self.recalc(i)   # can we just move this from top of loop to bottom?
+    #dstr = [self.principle for _ in range(nsamples)]
+    dstr = self.principle * np.ones(nsamples)
+    for i in range(1, years+1):
+      #self.recalc(i)   # can we just move this from top of loop to bottom?
                        # No, this runs recalc for the given year. Afterwards, we
                        # must recalc for the actual input years. This arg was not passed.
-      dstr = self.roi_dstr
+      #dstr = self.roi_dstr
+      #dstr = one_yr_sim(dstr, mu=self.mu, sigma=self.sigma)
+      dstr = dstr * np.random.lognormal(self.mu, self.sigma, nsamples)
       mid.append(np.median(dstr))
       low.append(np.quantile(dstr, 0.5 + interval))
       high.append(np.quantile(dstr, 0.5 - interval))
