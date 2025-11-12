@@ -29,6 +29,7 @@ def roi_dstr(years, mu, sigma, trials=10**4, principle=1e3):
   # XXX sigma is not replaceable with self.sigma since it also stands in for 
   # alt_sigma.
   # ^Relevant for older Two_Strats class, not for current Strats class?
+  # TODO use lognormal(mu, sigma, size) to remove trials loop
   if sigma:
     results = [None for _ in range(trials)]
     for i in range(trials):
@@ -48,6 +49,16 @@ def one_yr_sim(principle, mu, sigma):
   balance = []
   for p in principle:
     balance.append(np.random.lognormal(mu, sigma) * p)
+
+def dstr_sim_data(self, years=0, nsamples=10**4):
+  # Random sampling for each year, to be used by dstr_over_time and yearly_plot
+  if not years:
+    years = self.years
+  yr_amt = [self.principle * np.ones(nsamples)]
+  for i in range(years):
+    yr_amt.append(np.random.lognormal(self.mu, self.sigma, nsamples) *
+                  yr_amt[i])
+  return yr_amt[1:]  # leave out trivial first year
 
 
 # XXX Get rid of this, integrate it into print_summary()
@@ -153,9 +164,15 @@ def yearly_plot(strat1, strat2, stop, step, start=0):
   win = [None for _ in years]
   win_sem = [None for _ in years]
   for i in range(len(years)):
-    strat1.recalc(years[i])
-    strat2.recalc(years[i])
-    win[i], win_sem[i] = compare(strat1.roi_dstr, strat2.roi_dstr)
+    #strat1.recalc(years[i])
+    #strat2.recalc(years[i])
+    #win[i], win_sem[i] = compare(strat1.roi_dstr, strat2.roi_dstr)
+    # XXX this method seems to get different results
+    # i-1 because yr_amt[0] is after 1 year
+    # Note that with this version, the plot may look smoother, because each
+    # point actually depends on the previous.
+    win[i], win_sem[i] = compare(strat1.yr_amt[years[i]-1],
+                                 strat2.yr_amt[years[i]-1])
     # compare now takes results, not years. years needs to pass through strat obj
     # needs to make new strat object on each loop, or alter existing strat results
   fig, ax = plt.subplots()
@@ -164,6 +181,11 @@ def yearly_plot(strat1, strat2, stop, step, start=0):
   ax.set_ylabel("P(A>B)")
   ax.set_title("Probability of A outperforming B")
   st.pyplot(fig)
+
+def test_plot(strat1, strat2):
+  # was going to be for debugging discrepancy in yearly_plot but I think we found issue
+  for yr in range(5, 15, 5):
+    pass
   
 class Two_Strats:  # From previous draft---not in use.
   def __init__(self, mu, sigma, alt_mu, alt_sigma=0, years=1, principle=1e3, \
@@ -186,7 +208,7 @@ class Two_Strats:  # From previous draft---not in use.
 class Strat:
   # TODO method to plot pdf, cdf, etc. along with another strat object passed
   # as arg
-  def __init__(self, mu, sigma=0, years=1, principle=1e3, trials=10000):
+  def __init__(self, mu, sigma=0, years=1, principle=1e3, trials=10**4):
     # as of 2025-10-27: inputs mu and sigma correspond to mu-1 and sigma of the
     # lognormal. get_mu and get_sigma give mu and sigma of the underlying normal
     # distribution, which is used as the input for the PDF, CDF, and scipy funcs.
@@ -202,7 +224,12 @@ class Strat:
     # TODO Below could be extracted to recalc (or calc) method.
     # Can roi_dstr be optional in init? Want to initialize object before
     # deciding years
-    self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
+    # FIXME at yr_amt[years] (amt after years+1 years) P(A>B) is unrealistically
+    # low. What is causing this? Only happens when yeaerly_plot uses yr_amt
+    # instead of old slow method.
+    self.yr_amt = dstr_sim_data(self, years=30)
+    self.roi_dstr = self.yr_amt[years].copy()
+    #self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
     self.summary = summarize(self.roi_dstr, self.years)
     # ^Should this be a method?
     #self.label = "$\mu *=$"+str(mu)+", $\sigma *=$"+str(sigma)
@@ -302,6 +329,7 @@ class Strat:
     # Do functions work as expected if years=0?
     # Faster to start loop at 1 (0 is trivially).
     #dstr = [self.principle for _ in range(nsamples)]
+    '''
     dstr = self.principle * np.ones(nsamples)
     for i in range(1, years+1):
       #self.recalc(i)   # can we just move this from top of loop to bottom?
@@ -314,6 +342,12 @@ class Strat:
       low.append(np.quantile(dstr, 0.5 + interval))
       high.append(np.quantile(dstr, 0.5 - interval))
       # Confirm that curves list is behaving as expected
+    '''
+    dstr = dstr_sim_data(self, years=years, nsamples=nsamples)
+    for i in range(years):
+      mid.append(np.median(dstr[i]))
+      low.append(np.quantile(dstr[i], 0.5 + interval))
+      high.append(np.quantile(dstr[i], 0.5 - interval))
     fig, ax = plt.subplots()
     for key in curves:
       # Use nested list comprehension?

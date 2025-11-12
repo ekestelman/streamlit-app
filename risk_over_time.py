@@ -64,9 +64,9 @@ current_row = 0
 # unit of other inputs. Consider an explanation section.
 years = input_grid[current_row][0].number_input(
         label='Time', # truncates to integer (obvious)
-        min_value=0, value=years, key='time_input', on_change=update_inputs,
+        min_value=1, value=years, key='time_input', on_change=update_inputs,
         args=['time_input'])
-years = input_grid[current_row][1].slider(label='', min_value=0, max_value=60, 
+years = input_grid[current_row][1].slider(label='', min_value=1, max_value=60, 
         value=years, key='time_slide', on_change=update_inputs,
         args=['time_slide'])
 current_row += 1
@@ -328,7 +328,7 @@ st.write('### Comparison Over Time')
 # TODO yearly_plot (compare) and dstr_over_time (single spread) could be made to
 # depend on years, or can be created just once with no need to change if
 # different years is chosen. Maybe should be moved to bottom instead of top?
-yearly_plot(strat1, strat2, stop=30, step=5)
+yearly_plot(strat1, strat2, stop=30, step=1)
 # Need to run recalc?
 strat1.recalc(years)
 strat2.recalc(years)
