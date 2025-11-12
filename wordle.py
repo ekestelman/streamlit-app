@@ -4,9 +4,6 @@ import random
 import time
 import wordle_lib.solver
 
-# this program needs has a lot of modules which will make the directory messy,
-# so I may try it later
-
 st.markdown('## Wordle Solver ⬛🟨🟩')
 st.markdown('For a given solution and initial guess, this program tries to solve the \
           Wordle puzzle! It is not a knockoff of the game&mdash;you have to choose the \
@@ -15,6 +12,7 @@ st.markdown('For a given solution and initial guess, this program tries to solve
           \n\nWhen the program runs, it shows the guesses it makes, and the information \
           gathered through each guess. The output shown is not very clear, and I may fix \
           this some day! But for now I think it is still fun to use.')
+st.write('For more details on how this program works, please visit the [repository](https://github.com/ekestelman/wordle).') # add link
 
 def assign_ans():
   with open('wordle_lib/word_list', 'r') as f:
@@ -42,10 +40,10 @@ def update_input(key):
 # this is a cool and simple option too
 #if st.button(label='randomize', key='rand_ans'):
 #  ans = random.choice(wordlist)
-ans = st.text_input(label='Solution', value=st.session_state.ans)
+ans = st.text_input(label='Solution', value=st.session_state.ans).lower()
 st.button(label='randomize', key='rand_ans', on_click=update_input, args=['ans'])
 
-first = st.text_input(label='Starting guess', value=st.session_state.first)
+first = st.text_input(label='Starting guess', value=st.session_state.first).lower()
 st.button(label='randomize', key='rand_first', on_click=update_input, args=['first'])
 
 st.write(first, '->', ans)
