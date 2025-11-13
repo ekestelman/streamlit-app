@@ -14,6 +14,7 @@ st.markdown('For a given solution and initial guess, this program tries to solve
           this some day! But for now I think it is still fun to use.')
 st.write('For more details on how this program works, please visit the [repository](https://github.com/ekestelman/wordle).') # add link
 
+# are we not using this?
 def assign_ans():
   with open('wordle_lib/word_list', 'r') as f:
     wordlist = f.read().split()
@@ -46,7 +47,10 @@ st.button(label='randomize', key='rand_ans', on_click=update_input, args=['ans']
 first = st.text_input(label='Starting guess', value=st.session_state.first).lower()
 st.button(label='randomize', key='rand_first', on_click=update_input, args=['first'])
 
-st.write(first, '->', ans)
+if ans not in wordlist:
+  st.write(f'**{ans}** is not in the word list! Please choose a different `Solution`.')
+else:
+  st.write(first, '->', ans)
 
-wordle_lib.solver.solve(ans, first=first, show=True)
+  wordle_lib.solver.solve(ans, first=first, show=True)
 
