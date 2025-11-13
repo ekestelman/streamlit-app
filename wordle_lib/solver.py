@@ -8,6 +8,19 @@ from wordle_lib.list_stats import get_word_scores, get_ltr_freq
 
 def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
   
+  def color_print(guess, green, orange, grey):
+    # Probably better to not have this nested
+    correct = ""
+    for j in range(5):
+      if guess[j] == ans[j]:
+        correct += f":green-background[{guess[j]}]"
+      elif guess[j] in orange:
+        correct += f":orange-background[{guess[j]}]"
+      else:
+        correct += f":grey-background[{guess[j]}]"
+    #st.write(guess, correct, [x for x in orange])
+    st.write(correct)
+
   # Common starting words: salet, crane, irate.
   # TODO for more interactive program, try having user input string
   # representing orange/green/grey after each guess.
@@ -29,8 +42,8 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
   # TODO keep track of guessed words with dict
   
   guess = first
-  if show:
-    st.write(guess)
+  #if show:
+  #  st.write(guess)
   
   grey = {}         # Letters known to not be in ans
   orange = {}       # Letters known to be in ans but placement unknown
@@ -59,6 +72,8 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
         grey[guess[j]] = None
   
     #print(green);print(orange);print(grey)
+    if show:
+      color_print(guess, green, orange, grey)
   
     good = False    # Good guess
     while not good:
@@ -111,20 +126,15 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
         continue
       good = True    # This is just another break
     
-    if show:
-      correct = ""
-      for j in range(5):
-        if guess[j] == ans[j]:
-          correct += guess[j]
-        else:
-          correct += "_"
-      st.write(guess, correct, [x for x in orange])
+    #if show:
+    #  color_print(guess, green, orange, grey)
     tries += 1
     if tries == 6:
       break
   
   if show:
-    st.write(ans)
+    #st.write(ans)
+    color_print(guess, green, orange, grey)
   if guess == ans:
     return tries
   else:

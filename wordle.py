@@ -47,8 +47,10 @@ st.button(label='randomize', key='rand_ans', on_click=update_input, args=['ans']
 first = st.text_input(label='Starting guess', value=st.session_state.first).lower()
 st.button(label='randomize', key='rand_first', on_click=update_input, args=['first'])
 
+# This is good for actual usage, but may be useful to comment out for testing
+# (can use made up words to test how code is handling certain situations).
 if ans not in wordlist:
-  st.write(f'**{ans}** is not in the word list! Please choose a different `Solution`.')
+  st.write(f'**{ans}** is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list)! Please choose a different `Solution`.')
 else:
   st.write(first, '->', ans)
 
