@@ -49,9 +49,21 @@ st.button(label='randomize', key='rand_first', on_click=update_input, args=['fir
 
 # This is good for actual usage, but may be useful to comment out for testing
 # (can use made up words to test how code is handling certain situations).
+good_inputs = True
 if ans not in wordlist:
-  st.write(f'**{ans}** is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list)! Please choose a different `Solution`.')
-else:
+  good_inputs = False
+  st.warning(f'**Warning:**  *{ans}* is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list). Please choose a different `Solution`.', icon=':material/warning:')
+  #st.write(f'> :warning: **Warning:**  *{ans}* is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list). Please choose a different `Solution`.')
+if len(first) < 5:
+  #good_inputs = False
+  #st.write("> :warning: `Starting guess` must have 5 letters.")
+  first = first.ljust(5, ' ')
+  st.info('**Note:** `Starting guess` has < 5 letters.', icon=':material/info:')
+  #st.write("> :information_source: **Note:** `Starting guess` has < 5 letters.")
+if len(first) > 5:
+  st.info('**Note:** Only the first 5 letters of `Starting guess` will be used.', icon=':material/info:')
+  #st.write("> :information_source: **Note:** Only the first 5 letters of `Starting guess` are used.")
+if good_inputs:
   st.write(first, '->', ans)
 
   wordle_lib.solver.solve(ans, first=first, show=True)
