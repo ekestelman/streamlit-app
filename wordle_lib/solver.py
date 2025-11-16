@@ -138,8 +138,8 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
     if tries == 6:
       break
   
-  bot = {end : '🤖' for end in ['give_up', 'win', 'lose']}
-  #bot = {end : ':material/smart_toy:' for end in ['give_up', 'win', 'lose']}
+  #bot = {end : '🤖' for end in ['give_up', 'win', 'lose']}
+  bot = {end : ':material/smart_toy:' for end in ['give_up', 'win', 'lose']}
   #bot = {'give_up': ':material/sentiment_stressed:',
   #       'win': ':material/sentiment_very_satisfied:',
   #       'lose': ':material/sentiment_calm:'}
