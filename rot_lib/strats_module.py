@@ -227,9 +227,12 @@ class Strat:
     # FIXME at yr_amt[years] (amt after years+1 years) P(A>B) is unrealistically
     # low. What is causing this? Only happens when yeaerly_plot uses yr_amt
     # instead of old slow method.
-    self.yr_amt = dstr_sim_data(self, years=30)
-    self.roi_dstr = self.yr_amt[years].copy()
-    #self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
+    plot_years = 30   # t_max for yearly_plot, may want this to be adjustable
+    self.yr_amt = dstr_sim_data(self, years=plot_years)
+    if years <= plot_years:
+      self.roi_dstr = self.yr_amt[years-1].copy()  # yr_amt[0] is after 1 year
+    else:
+      self.roi_dstr = roi_dstr(years, self.mu, self.sigma, trials, principle)
     self.summary = summarize(self.roi_dstr, self.years)
     # ^Should this be a method?
     #self.label = "$\mu *=$"+str(mu)+", $\sigma *=$"+str(sigma)
