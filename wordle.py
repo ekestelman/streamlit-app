@@ -51,7 +51,7 @@ st.button(label='randomize', key='rand_first', on_click=update_input, args=['fir
 # (can use made up words to test how code is handling certain situations).
 good_inputs = True
 if ans not in wordlist:
-  good_inputs = False
+  #good_inputs = False
   st.warning(f'**Warning:**  *{ans}* is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list). Please choose a different `Solution`.', icon=':material/warning:')
   #st.write(f'> :warning: **Warning:**  *{ans}* is not in the [word list](https://github.com/ekestelman/wordle/blob/39e412fea5cc09550aeb86fd273933b6894154e6/word_list). Please choose a different `Solution`.')
 if len(first) < 5:

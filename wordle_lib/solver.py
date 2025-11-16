@@ -76,9 +76,13 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
       color_print(guess, green, orange, grey)
   
     good = False    # Good guess
+    give_up = False
     while not good:
       breakout = False  # True if a loop is broken
       i += 1
+      if i == len(wordlist):
+        give_up = True
+        break
       guess = wordlist[i]
       # TODO better way to track used words if non alpha
       # Current method: preorder the words (con: can't adjust based on new info
@@ -126,17 +130,29 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
         continue
       good = True    # This is just another break
     
+    if give_up:
+      break
     #if show:
     #  color_print(guess, green, orange, grey)
     tries += 1
     if tries == 6:
       break
   
-  if show:
+  bot = {end : '🤖' for end in ['give_up', 'win', 'lose']}
+  #bot = {end : ':material/smart_toy:' for end in ['give_up', 'win', 'lose']}
+  #bot = {'give_up': ':material/sentiment_stressed:',
+  #       'win': ':material/sentiment_very_satisfied:',
+  #       'lose': ':material/sentiment_calm:'}
+  if give_up:
+    st.error("I give up!", icon=bot['give_up'])
+  elif show:
     #st.write(ans)
     color_print(guess, green, orange, grey)
   if guess == ans:
+    st.success(f"Got it in {tries} guesses!", icon=bot['win'])
     return tries
   else:
+    if not give_up:
+      st.info("Tough word! Ran out of guesses.", icon=bot['lose'])
     return 0
 
