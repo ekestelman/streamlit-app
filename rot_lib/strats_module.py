@@ -212,8 +212,14 @@ class Strat:
     # as of 2025-10-27: inputs mu and sigma correspond to mu-1 and sigma of the
     # lognormal. get_mu and get_sigma give mu and sigma of the underlying normal
     # distribution, which is used as the input for the PDF, CDF, and scipy funcs.
+    # Preserve mu, sigma of lognorm
+    self.mu_x = mu
+    self.sig_x = sigma
+    # These should be median and geometric std
+    # XXX but we may have to change some other parts of code!
     self.mu_star = mu  # Median
     self.sig_star = sigma  # Scatter?
+    # Below are mu_Z and sigma_Z (mean and std of underlying norm)
     self.mu = get_mu(mu, sigma)
     self.sigma = get_sig(mu, sigma)
     #self.mu = mu
@@ -322,7 +328,7 @@ class Strat:
       co2 = 'xkcd:goldenrod'
     colors = {curve: co2 for curve in ['low', 'high']}
     colors['mid'] = co1
-    labels = {'mid': 'mean', 'high': 'middle ' + ('%g' % (interval*200)) + '%',
+    labels = {'mid': 'median', 'high': 'middle ' + ('%g' % (interval*200)) + '%',
               'low': None}
     # TODO way to skip years like in yearly_plot
     step = 1
@@ -347,10 +353,12 @@ class Strat:
       # Confirm that curves list is behaving as expected
     '''
     dstr = dstr_sim_data(self, years=years, nsamples=nsamples)
+    #expect_sim = [self.principle]
     for i in range(years):
       mid.append(np.median(dstr[i]))
       low.append(np.quantile(dstr[i], 0.5 + interval))
       high.append(np.quantile(dstr[i], 0.5 - interval))
+      #expect_sim.append(np.mean(dstr[i]))
     fig, ax = plt.subplots()
     for key in curves:
       # Use nested list comprehension?
@@ -358,6 +366,10 @@ class Strat:
         curves[key] = [_ / self.principle for _ in curves[key]]
         # Confirm the elements are changing as expected
       ax.plot(curves[key], color=colors[key], label=labels[key])
+    expect_x = np.linspace(0, 15, years*2)
+    expect_y = self.principle * self.mu_star ** expect_x
+    ax.plot(expect_x, expect_y, color=colors['mid'], ls=':', label='mean')
+    #ax.plot(expect_sim, color='black', ls=':')
     #for i in range(3):
     #  if normalize:
     #    curves[i] = [_ / self.principle for _ in curves[i]]
