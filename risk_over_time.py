@@ -352,6 +352,7 @@ st.pyplot(fig)
 st.write(round(time() - tstart, 3)); tstart = time()
 
 st.write('### Projected Returns Over Time')
+interval = st.number_input('Middle _%', 0., 1., .5)
 if 0:
   # show two plots side by side
   dot_plot_grid = st.columns([1, 1]) # [1,1] is relative width of 2 cols
@@ -364,9 +365,9 @@ if 0:
 # set interval with input? currently hardcoded in strats_module
 else:
   # show only one plot, or both in series
-  st.pyplot(strat1.dstr_over_time(years=15, normalize=False))
+  st.pyplot(strat1.dstr_over_time(years=15, normalize=False, interval=interval))
   strat1.recalc(years)
-  st.pyplot(strat2.dstr_over_time(years=15, normalize=False, alt_colo=True))
+  st.pyplot(strat2.dstr_over_time(years=15, normalize=False, alt_colo=True, interval=interval))
   strat2.recalc(years)
 # Can try executing recalc in dstr func call, or find out how to rerun otherwise.
 # time set doesn't really matter for this graph
