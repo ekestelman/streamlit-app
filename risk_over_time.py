@@ -328,8 +328,8 @@ st.write(f'### Complement of Cumulative Distribution Function at Time '
 # expected wait time message
 inverse = True
 fig, ax = plt.subplots()
-ax.plot(*strat1.cum_dstr(inverse), label=strat1.label)
-ax.plot(*strat2.cum_dstr(inverse), label=strat2.label)
+ax.plot(*strat1.cum_dstr(inverse, xmax=hist_max), label=strat1.label)
+ax.plot(*strat2.cum_dstr(inverse, xmax=hist_max), label=strat2.label)
 ax.set_xlabel('Amount')
 if inverse:
   ax.set_ylabel('P(>x)')

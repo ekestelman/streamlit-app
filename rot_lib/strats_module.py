@@ -272,15 +272,17 @@ class Strat:
     # Can produce cdf analytically or numerically
     pass
 
-  def cum_dstr(self, inverse=False):
+  def cum_dstr(self, inverse=False, xmax=None):
     # Numerical version of cdf()
     # Cumulative version of roi_dstr
     # Probability of yielding at least x.
     # Use reverse kwarg to give probability of yielding at least some amount.
     # Any use in reversing sort order for other calculations?
     self.roi_dstr.sort() # Check scope.
+    if not xmax:
+      xmax = self.roi_dstr[-1]
     # Should we do this earlier?
-    x = np.linspace(0, self.roi_dstr[-1], 1000) # max(roi_dstr) if sorted
+    x = np.linspace(0, xmax, 1000) # max(roi_dstr) if sorted
     # XXX this max makes graphs uneven
     y = [0 for _ in x]
     i = 0
