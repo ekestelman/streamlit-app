@@ -5,6 +5,8 @@ from rot_lib.strats_module import *
 from scipy.stats import lognorm
 from time import time
 
+tstart = time()
+
 def update_inputs(param, src=None):
   # callback function
   # key is parameter, source is tool used for input
@@ -199,6 +201,7 @@ sigma2 = input_grid[current_row][1].slider('',
 current_row += 1
 
 with st.expander('Debug Outputs'):
+  st.write('loading time?', round(time() - tstart, 3))
   st.write('This section just shows some of the parameters, which is useful to check that things are working properly. You may ignore this section.')
   st.write('Years:', years)
   st.write('Principle:', principal)
@@ -245,10 +248,55 @@ compare(strat1.roi_dstr, strat2.roi_dstr, summary=True)
 tstart = time()
 
 st.write(f'### Probability Density Function at Time $t = {years}$')
+#st.info('**Note:** Probability density is based on the bars shown, not the total data.', icon=':material/info:')
 fig, ax = plt.subplots()
-strats = [strat1.roi_dstr, strat2.roi_dstr]
-ax.hist(strats, 15 * int(strat1.years**0.5), 
-        density=True, 
+#strats = [strat1.roi_dstr, strat2.roi_dstr]
+# including range param ignores outliers, maybe this makes density less accurate?
+# may not be a big deal
+# ^maybe this is misleading for very large sig on one strat?
+# Can we just use xlim instead of range?
+# TODO use median and geometric std. Should be * not +
+#st.write(strat1.mu_star, strat1.sig_star)
+#st.write(strat2.mu_star, strat2.sig_star)
+#stds = 3  # number of standard deviations to include
+#hist_max = max(strat1.mu_star + strat1.sig_star * stds,
+#               strat2.mu_star + strat2.sig_star * stds)
+q = .90  # cutoff quantil for hist
+hist_max = max(#np.quantile(strat1.roi_dstr, q),
+               #np.quantile(strat2.roi_dstr, q),
+               np.median(strat1.roi_dstr) * 3,
+               np.median(strat2.roi_dstr) * 3,
+               )
+#maximum = max(max(strat1.roi_dstr), max(strat2.roi_dstr))
+#nbins = int(maximum / hist_max * 50) results in way too many bins, too slow.
+#st.write(nbins, '=', maximum, '/', hist_max, '* 50')
+npts = len(strat1.roi_dstr) # assume both strats have some sampling size
+factor = 1  # for testing how weights work
+nbins = 40 * factor
+bins = np.linspace(0, hist_max * factor, nbins+1)
+weights = [[1 / (npts * (bins[1] - bins[0])) for _ in range(npts)] \
+           for __ in range(2)]
+# XXX changing whether hist uses density or weights seems to affect cdf too??
+# Why does density=True result in lower density numbers?
+# Expectation: density=True only accounts for data in bins, so numbers should
+# be inflated.#
+ax.hist([strat1.roi_dstr, strat2.roi_dstr],
+        #bins=15 * int(strat1.years**0.5),
+        #bins=np.linspace(0, hist_max, 3), # eqv to assigning bins and range
+        #bins=2*9,
+        bins=bins,
+        #bins = nbins,
+        #range=(0, hist_max*9),
+        # manually normalize so that density can relfect total data
+        # weights does not seem to be working as intended
+        # These weights result in sum of all heights = 1
+        #weights = [[1 / (npts * (bins[1] - bins[0])) for _ in range(npts)] \
+        #           for __ in range(2)],
+        #weights = [[1 / npts for _ in range(npts)],
+        #           [1 / npts for _ in range(npts)]],
+        # For PDF, sum of all heights * widths = 1
+        weights=weights,
+        #density=True,
         label=[strat1.label, strat2.label])
 # for pdf
 #x = np.linspace(min(strats[0]), max(strats[0]), 1000)
@@ -265,6 +313,7 @@ ax.axvline(x=benchmark, color='black', ls='--',
 ax.set_title('PDF')
 ax.set_xlabel('Amount')
 ax.set_ylabel('Probability Density')
+ax.set_xlim(0, hist_max)
 ax.legend()
 st.pyplot(fig)
 
@@ -288,12 +337,15 @@ if inverse:
 else:
   ax.set_ylabel('P(<x)')
   ax.set_title('CDF (chance of ending with at most x)')
-ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
+#ax.vlines(benchmark, 0, 1, color='black', linestyles='--',
+ax.axvline(benchmark, 0, 1, color='black', ls='--',
           #label='benchmark = ' + str(round(benchmark, 2)))
           #label=f'benchmark = {yrly_bmark}')
           # TODO omit principle coefficient if 1?
           label=f'${principal} \cdot {1+yrly_bmark}^{{{years}}} = '
                 f'{round(benchmark, 2)}$')
+ax.set_ylim(0, 1)
+ax.set_xlim(0, hist_max)
 ax.legend()
 st.pyplot(fig)
 
