@@ -2,16 +2,25 @@ import streamlit as st
 import base64
 
 icon = ':wave:'
-img_file = 'face_w_transparent_bgd_2.png'
 img_file = None
+#img_file = 'hello.png'
+
+header_html = f"<h1> Hello, I'm Eial\
+                <img src='data:image/png;base64,{icon}' height=64em\
+                style='vertical-align:-14px; margin-left:10px;'>\
+                </h1>"  # Can't use it like this because icon gets changed
+header_height = '56em'
+header_valign = '-10px'
+header_margin = '5x'
+
 if img_file:
   # Load image from actual image file
   with open(img_file, 'rb') as f:
     icon = base64.b64encode(f.read()).decode()
   st.markdown(f"""
               <h1> Hello, I'm Eial
-              <img src='data:image/png;base64,{icon}' height=64em
-               style='vertical-align:-14px; margin-left:10px;'>
+              <img src='data:image/png;base64,{icon}' height={header_height}
+               style='vertical-align:{header_valign}; margin-left:{header_margin};'>
               </h1>
               """, unsafe_allow_html=True)
 
@@ -21,8 +30,8 @@ elif 1:
     icon = f.read()
   st.markdown(f"""
               <h1> Hello, I'm Eial
-              <img src='data:image/png;base64,{icon}' height=64em
-               style='vertical-align:-14px; margin-left:10px;'>
+              <img src='data:image/png;base64,{icon}' height={header_height}
+               style='vertical-align:{header_valign}; margin-left:{header_margin};'>
               </h1>
               """, unsafe_allow_html=True)
 
