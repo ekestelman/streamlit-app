@@ -287,9 +287,10 @@ class Strat:
     y = [0 for _ in x]
     i = 0
     j = 0
+    jmax = len(self.roi_dstr)
     for i in range(len(x)):
       y[i] = y[i-1]             # 0 on first iter
-      while self.roi_dstr[j] < x[i]:
+      while j < jmax and self.roi_dstr[j] < x[i]:
         y[i] += 1
         j += 1
     y = [elm / self.trials for elm in y]
