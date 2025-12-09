@@ -24,7 +24,7 @@ if img_file:
               </h1>
               """, unsafe_allow_html=True)
 
-elif 1:
+elif 0:
   # Load image from encoded and decoded text file
   with open('img_encoding_file', 'r') as f:
     icon = f.read()
