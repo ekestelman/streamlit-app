@@ -3,6 +3,7 @@ import streamlit as st
 import random
 import time
 import wordle_lib.solver
+import pathlib
 
 st.markdown('## Wordle Solver ⬛🟨🟩')
 st.markdown('For a given solution and initial guess, this program tries to solve the \
@@ -14,14 +15,16 @@ st.markdown('For a given solution and initial guess, this program tries to solve
           this some day! But for now I think it is still fun to use.')
 st.write('For more details on how this program works, please visit the [repository](https://github.com/ekestelman/wordle).') # add link
 
+filepath = pathlib.Path(__file__).resolve().parent
+
 # are we not using this?
 def assign_ans():
-  with open('wordle_lib/word_list', 'r') as f:
+  with open(filepath / 'wordle_lib/word_list', 'r') as f:
     wordlist = f.read().split()
 
   return random.choice(wordlist)
 
-with open('wordle_lib/word_list', 'r') as f:
+with open(filepath / 'wordle_lib/word_list', 'r') as f:
   #st.write(time.time())  # test if this keeps getting rerun!
   wordlist = f.read().split()
 

@@ -5,6 +5,9 @@
 import random
 import streamlit as st
 from wordle_lib.list_stats import get_word_scores, get_ltr_freq
+import pathlib
+
+filepath = pathlib.Path(__file__).parent.parent.resolve()  # note use of parent twice
 
 def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
   
@@ -26,7 +29,7 @@ def solve(ans, first='salet', wordlist=None, ordered=False, show=False):
   # representing orange/green/grey after each guess.
 
   if not wordlist:
-    with open('wordle_lib/word_list','r') as f:
+    with open(filepath / 'wordle_lib/word_list','r') as f:
       wordlist = f.read().split()
 
   # If wordlist is given but it's not ordered we still need to order it.

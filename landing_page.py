@@ -1,9 +1,11 @@
 import streamlit as st
 import base64
+import pathlib
 
 icon = ':wave:'
 img_file = None
 #img_file = 'hello.png'
+filepath = pathlib.Path(__file__).parent.resolve()
 
 header_html = f"<h1> Hello, I'm Eial\
                 <img src='data:image/png;base64,{icon}' height=64em\
@@ -15,7 +17,7 @@ header_margin = '5x'
 
 if img_file:
   # Load image from actual image file
-  with open(img_file, 'rb') as f:
+  with open(filepath / img_file, 'rb') as f:
     icon = base64.b64encode(f.read()).decode()
   st.markdown(f"""
               <h1> Hello, I'm Eial
@@ -24,9 +26,9 @@ if img_file:
               </h1>
               """, unsafe_allow_html=True)
 
-elif 0:
+elif 1:
   # Load image from encoded and decoded text file
-  with open('img_encoding_file', 'r') as f:
+  with open(filepath / 'img_encoding_file', 'r') as f:
     icon = f.read()
   st.markdown(f"""
               <h1> Hello, I'm Eial
