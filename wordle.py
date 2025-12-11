@@ -44,10 +44,10 @@ def update_input(key):
 # this is a cool and simple option too
 #if st.button(label='randomize', key='rand_ans'):
 #  ans = random.choice(wordlist)
-ans = st.text_input(label='Solution', value=st.session_state.ans).lower()
+ans = st.text_input(label='Solution', value=st.session_state.ans).lower().strip()
 st.button(label='randomize', key='rand_ans', on_click=update_input, args=['ans'])
 
-first = st.text_input(label='Starting guess', value=st.session_state.first).lower()
+first = st.text_input(label='Starting guess', value=st.session_state.first).lower().strip()
 st.button(label='randomize', key='rand_first', on_click=update_input, args=['first'])
 
 # This is good for actual usage, but may be useful to comment out for testing
@@ -67,6 +67,7 @@ if len(first) < 5:
 if len(first) > 5:
   st.info('**Note:** Only the first 5 letters of `Starting guess` will be used.', icon=':material/info:')
   #st.write("> :information_source: **Note:** Only the first 5 letters of `Starting guess` are used.")
+#if first[:5] not in wordlist: # Can't implement this until we have a word list of possible guesses.
 if good_inputs:
   st.write(first, '->', ans)
 
