@@ -352,7 +352,7 @@ st.pyplot(fig)
 st.write(round(time() - tstart, 3)); tstart = time()
 
 st.write('### Projected Returns Over Time')
-interval = st.number_input('Middle _%', 0., 1., .5)
+interval = st.number_input('Middle _%', 0., 1., .5, .05)
 if 0:
   # show two plots side by side
   dot_plot_grid = st.columns([1, 1]) # [1,1] is relative width of 2 cols
